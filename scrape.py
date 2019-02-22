@@ -1,14 +1,16 @@
-import valve
 import json
 import requests
 from bs4 import BeautifulSoup
 from sys import argv
 
-output = ''
+jsondata = ''
 
-valve.steam.api.interface.API.__init__(key=,format='json',versions=None, interfaces=ISteamRemoteStorage)
+key = 'A1A81C10144C6843539A230EDF00DCBC'
 
-with valve.steam.api.interface.ISteamRemoteStorage as interface:
+endpoint = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+data = {'key':key,'itemcount':1,'publishedfileids[0]':68540175}
 
-	output == interface.GetPublishedFileDetails(1,68540239)
-	print(output)
+r = requests.post(url = endpoint, data = data)
+jsondata = r.json
+
+print(jsondata)
