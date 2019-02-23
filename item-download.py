@@ -34,7 +34,7 @@ jsondata = r.json()
 #tagsDict = jsondata['response']['publishedfiledetails'][0]['tags']
 for i in jsondata['response']['publishedfiledetails'][0]['tags']:
 	tags = tags + u', ' + u",".join(i.values())
-print(unicode(jsondata['response']['publishedfiledetails'][0]['tags']))
+tags = tags[2:]
 title = jsondata['response']['publishedfiledetails'][0]['title']
 filename = jsondata['response']['publishedfiledetails'][0]['filename']
 release = int(jsondata['response']['publishedfiledetails'][0]['time_created'])
@@ -47,7 +47,8 @@ preview_url = jsondata['response']['publishedfiledetails'][0]['preview_url']
 authorrequest = requests.get(url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/", params = {'key':key,'steamids':SteamID64})
 authorjson = authorrequest.json()
 author = authorjson['response']['players'][0]['personaname']
-f = io.open(filename + '.txt', 'a', encoding='utf-8', newline='')
+os.makedirs(str(gameID) + u'/' + str(workshopID) + u'/mymaps')
+f = io.open(str(gameID) + u'/' + str(workshopID) + u'/' + str(filename) + '.txt', 'a', encoding='utf-8', newline='')
 gamerequest = requests.get(url = "https://store.steampowered.com/api/appdetails", params = {'appids':gameID})
 gamejson = gamerequest.json()
 game = gamejson[str(gameID)]['data']['name']
@@ -74,5 +75,5 @@ f.write(u'Description\t\t\t\t: ' + unicode(description) + u'\n\n')
 f.write(u'===========================================================================\n* Play Information *\n')
 f.write(u'Game\t\t\t\t\t: ' + unicode(game))
 
-os.system(u'wget -O' + filename + u' ' + file_url)
-os.system(u'wget -O' + filename + u'_preview.png ' + preview_url)
+os.system(u'wget -O "' + str(gameID) + u'/' + str(workshopID) + u'/' + str(filename) + u'" "' + file_url + u'"')
+os.system(u'wget -O "' + str(gameID) + u'/' + str(workshopID) + u'/' + str(filename) + u'_preview.png" "' + preview_url + u'"')
