@@ -1,0 +1,19 @@
+(Note: This is based on the IDGAMES TXT template, avaliable here: ftp://ftp.gamers.org/pub/idgames/UPLTEMPL.TXT )
+(Note2: These are either hand-written or computer generated based on information avaliable on the Steam Workshop page for the map.)
+(Note3: Do not leave the messages in ()s in when writing your own TXT file for a map.)
+===========================================================================
+Tags					: (The Steam Workshop tags for the item from the Steam Web API.)
+===========================================================================
+Title					: (The title of the map on Steam Workshop.)
+WorkshopID				: (The Steam Workshop ID of the map, the number after "?id=" in the page's URL.)
+Filename				: (The filename of the level (xxx.bsp))
+Release date			: (The date the level was first posted in GMT. This is converted from the Unix timestamp provided by the Steam Web API.)
+Update date				: (The date the level was last updated in GMT. This is converted from the Unix timestamp provided by the Steam Web API.)
+Author					: (The Steam display name of the Steam Workshop author, this is provided for user readability. However, please note that as the author can change their display name, this should not be used to group maps by one author together. These display names can even have duplicates.)
+SteamID64				: (The author's SteamID64 identifier, this cannot be changed by the author. It is provided to accurately credit the specific author of the level. Any programs trying to group maps by one author using this scraped information should use this field to do so. Humans can both get the SteamID64 and use it to get the author's profile here: https://steamid.io)
+
+Description				: (The level description from the Steam Web Api.)
+
+===========================================================================
+* Play Information *
+Game					: (Put the name of the game this level is for here.)
