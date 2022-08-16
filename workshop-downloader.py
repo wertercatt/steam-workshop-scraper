@@ -7,7 +7,6 @@ import os
 #SteamWebAPI endpoints
 GetPublishedFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
 GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
-GetUGCFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetUGCFileDetails/v1/"
 
 #Load SteamWebAPI Key
 KeyFile = open("./SteamWebAPI.key", "r")
@@ -21,12 +20,6 @@ GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data =
 PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
 
 print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
-
-#Get additional UGC metadata for the file
-AppID = str(PublishedFileDetails["consumer_app_id"])
-GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + AppID
-GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
-print(GetUGCFileDetailsRawFile.text)
 
 #Get Variables for Output
 SteamID64 = PublishedFileDetails["creator"]
