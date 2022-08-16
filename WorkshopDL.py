@@ -19,26 +19,18 @@ def download(WorkshopID):
     GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
     GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
     PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
-
-    print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
+    CreatorAppID = str(PublishedFileDetails["creator_app_id"])
 
     #Get additional UGC metadata for the file
     if PublishedFileDetails["file_url"] != "":
-    CreatorAppID = str(PublishedFileDetails["creator_app_id"])
-    GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
-    GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
-    UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text)["data"])
-
-    print(json.dumps(UGCFileDetailsFile, sort_keys=True, indent=4))
-
+        GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
+        GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+        UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text)["data"])
 
     #Get additional UGC metadata for the preview
     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
     GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
     UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text)["data"])
-
-    print(json.dumps(UGCFileDetailsPreview, sort_keys=True, indent=4))
-
 
     #Get Variables for Output
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
@@ -48,11 +40,12 @@ def download(WorkshopID):
     WorkshopTitle = PublishedFileDetails["title"]
 
     #File Directory Variables
-    FileName = UGCFileDetailsFile["filename"]
-    FileDirectories = FileName.split("/")
-    FileName = FileDirectories[-1]
-    #Remove the actual FileName, leaving only the directories.
-    FileDirectories.pop(-1)
+    if PublishedFileDetails["file_url"] != "":
+        FileName = UGCFileDetailsFile["filename"]
+        FileDirectories = FileName.split("/")
+        FileName = FileDirectories[-1]
+        #Remove the actual FileName, leaving only the directories.
+        FileDirectories.pop(-1)
 
     #Preview Directory Variables
     PreviewName = UGCFileDetailsPreview["filename"]
@@ -63,25 +56,29 @@ def download(WorkshopID):
 
     #Output Directory Creation
     OutputDirectory = "./Workshop-Downloads/" + str(SteamID64) + "/" + ConsumerAppID + "/" + DateCreatedISO8601 + " - " + WorkshopTitle + "/"
-    FileOutputDirectory = OutputDirectory
-    for FileDirectory in FileDirectories:
-        FileOutputDirectory += FileDirectory + "/"
+    if PublishedFileDetails["file_url"] != "":
+        FileOutputDirectory = OutputDirectory
+        for FileDirectory in FileDirectories:
+            FileOutputDirectory += FileDirectory + "/"
     PreviewOutputDirectory = OutputDirectory
     for PreviewDirectory in PreviewDirectories:
         PreviewOutputDirectory += PreviewDirectory + "/"
     os.makedirs(OutputDirectory, exist_ok = True)
-    os.makedirs(FileOutputDirectory, exist_ok = True)
+    if PublishedFileDetails["file_url"] != "":
+        os.makedirs(FileOutputDirectory, exist_ok = True)
     os.makedirs(PreviewOutputDirectory, exist_ok = True)
 
     #Download UGC Files
-    os.system("wget -O \"" + FileOutputDirectory + FileName + "\" " + UGCFileDetailsFile["url"])
+    if PublishedFileDetails["file_url"] != "":
+        os.system("wget -O \"" + FileOutputDirectory + FileName + "\" " + UGCFileDetailsFile["url"])
     os.system("wget -O \"" + PreviewOutputDirectory + PreviewName + "\" " + UGCFileDetailsPreview["url"])
 
     #Save JSON Responses
     PublishedFileDetailsOutput = open(OutputDirectory + "/PublishedFileDetails.json", "w")
     json.dump(PublishedFileDetails, PublishedFileDetailsOutput, sort_keys=True, indent=4)
-    UGCFileDetailsOutputFile = open(OutputDirectory + "/UGCFileDetails.file.json", "w")
-    json.dump(UGCFileDetailsFile, UGCFileDetailsOutputFile, sort_keys=True, indent=4)
+    if PublishedFileDetails["file_url"] != "":
+        UGCFileDetailsOutputFile = open(OutputDirectory + "/UGCFileDetails.file.json", "w")
+        json.dump(UGCFileDetailsFile, UGCFileDetailsOutputFile, sort_keys=True, indent=4)
     UGCFileDetailsOutputPreview = open(OutputDirectory + "/UGCFileDetails.preview.json", "w")
     json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
 
