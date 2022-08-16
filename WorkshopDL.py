@@ -16,7 +16,6 @@ def download(WorkshopID):
     KeyFile.close()
 
     #Load Workshop Page Details
-    WorkshopID = str(sys.argv[1])
     GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
     GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
     PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
@@ -24,6 +23,7 @@ def download(WorkshopID):
     print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
 
     #Get additional UGC metadata for the file
+    if PublishedFileDetails["file_url"] != "":
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
     GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)

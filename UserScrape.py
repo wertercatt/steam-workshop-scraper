@@ -3,6 +3,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
+import WorkshopDL
 
 #Find Submission Function
 def UGCClassFinder(tag):
@@ -27,7 +28,8 @@ def scrape(SteamID64):
         if len(WorkshopSubmissions) == 0:
             break
         Page += 1
-    print(json.dumps(SubmissionIDs))
+    for SubmissionID in SubmissionIDs:
+        WorkshopDL.download(SubmissionID)
 
 if __name__ == '__main__':
     scrape(sys.argv[1])
