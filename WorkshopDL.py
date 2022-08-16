@@ -3,6 +3,7 @@ import sys
 import datetime
 import requests
 import os
+from pathvalidate import sanitize_filepath
 
 def download(WorkshopID):
     #SteamWebAPI endpoints
@@ -89,18 +90,18 @@ def download(WorkshopID):
 
     #Download UGC Files
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        os.system("wget -O \"" + FileOutputDirectory + FileName + "\" " + UGCFileDetailsFile["url"])
+        os.system("wget -O \"" + sanitize_filepath(FileOutputDirectory + FileName) + "\" " + UGCFileDetailsFile["url"])
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        os.system("wget -O \"" + PreviewOutputDirectory + PreviewName + "\" " + UGCFileDetailsPreview["url"])
+        os.system("wget -O \"" + sanitize_filepath(PreviewOutputDirectory + PreviewName) + "\" " + UGCFileDetailsPreview["url"])
 
     #Save JSON Responses
-    PublishedFileDetailsOutput = open(OutputDirectory + "/PublishedFileDetails.json", "w")
+    PublishedFileDetailsOutput = open(sanitize_filepath(OutputDirectory + "/PublishedFileDetails.json"), "w")
     json.dump(PublishedFileDetails, PublishedFileDetailsOutput, sort_keys=True, indent=4)
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        UGCFileDetailsOutputFile = open(OutputDirectory + "/UGCFileDetails.file.json", "w")
+        UGCFileDetailsOutputFile = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.file.json"), "w")
         json.dump(UGCFileDetailsFile, UGCFileDetailsOutputFile, sort_keys=True, indent=4)
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        UGCFileDetailsOutputPreview = open(OutputDirectory + "/UGCFileDetails.preview.json", "w")
+        UGCFileDetailsOutputPreview = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.preview.json"), "w")
         json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
 
 if __name__ == '__main__':
