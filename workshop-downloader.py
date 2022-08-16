@@ -45,16 +45,41 @@ SteamID64 = PublishedFileDetails["creator"]
 DateCreated = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(seconds=PublishedFileDetails["time_created"])
 DateCreatedISO8601 = DateCreated.strftime("%Y-%m-%dT%H-%M-%S")
 WorkshopTitle = PublishedFileDetails["title"]
+
+#File Directory Variables
 FileName = UGCFileDetailsFile["filename"]
 FileDirectories = FileName.split("/")
+FileName = FileDirectories[-1]
 #Remove the actual FileName, leaving only the directories.
 FileDirectories.pop(-1)
+
+#Preview Directory Variables
+PreviewName = UGCFileDetailsPreview["filename"]
+PreviewDirectories = PreviewName.split("/")
+PreviewName = PreviewDirectories[-1]
+#Remove the actual PreviewName, leaving only the directories.
+PreviewDirectories.pop(-1)
 
 #Output Directory Creation
 OutputDirectory = "./Workshop-Downloads/" + str(SteamID64) + "/" + ConsumerAppID + "/" + DateCreatedISO8601 + " - " + WorkshopTitle + "/"
 FileOutputDirectory = OutputDirectory
-for Directory in FileDirectories:
-    FileOutputDirectory += Directory + "/"
-
+for FileDirectory in FileDirectories:
+    FileOutputDirectory += FileDirectory + "/"
+PreviewOutputDirectory = OutputDirectory
+for PreviewDirectory in PreviewDirectories:
+    PreviewOutputDirectory += PreviewDirectory + "/"
 os.makedirs(OutputDirectory, exist_ok = True)
 os.makedirs(FileOutputDirectory, exist_ok = True)
+os.makedirs(PreviewOutputDirectory, exist_ok = True)
+
+#Download UGC Files
+os.system("wget -O \"" + FileOutputDirectory + FileName + "\" " + UGCFileDetailsFile["url"])
+os.system("wget -O \"" + PreviewOutputDirectory + PreviewName + "\" " + UGCFileDetailsPreview["url"])
+
+#Save JSON Responses
+PublishedFileDetailsOutput = open(OutputDirectory + "/PublishedFileDetails.json", "w")
+json.dump(PublishedFileDetails, PublishedFileDetailsOutput, sort_keys=True, indent=4)
+UGCFileDetailsOutputFile = open(OutputDirectory + "/UGCFileDetails.file.json", "w")
+json.dump(UGCFileDetailsFile, UGCFileDetailsOutputFile, sort_keys=True, indent=4)
+UGCFileDetailsOutputPreview = open(OutputDirectory + "/UGCFileDetails.preview.json", "w")
+json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
