@@ -22,13 +22,27 @@ PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["
 
 print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
 
+#Get additional UGC metadata for the file
+AppID = str(PublishedFileDetails["consumer_app_id"])
+GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + AppID
+GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+print(GetUGCFileDetailsRawFile.text)
+
 #Get Variables for Output
-AppID = PublishedFileDetails["consumer_app_id"]
 SteamID64 = PublishedFileDetails["creator"]
 DateCreated = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(seconds=PublishedFileDetails["time_created"])
 DateCreatedISO8601 = DateCreated.strftime("%Y-%m-%dT%H-%M-%S")
 WorkshopTitle = PublishedFileDetails["title"]
-ItemFileName = PublishedFileDetails["filename"]
-ItemFileNameSplit = ItemFileName.split("/")
+FileName = PublishedFileDetails["filename"]
+FileDirectories = FileName.split("/")
+#Remove the actual FileName, leaving only the directories.
+FileDirectories.pop(-1)
 
-print(json.dumps(ItemFileNameSplit, sort_keys=True, indent=4))
+#Output Directory Creation
+OutputDirectory = "./Workshop-Downloads/" + str(SteamID64) + "/" + AppID + "/" + DateCreatedISO8601 + " - " + WorkshopTitle + "/"
+FileOutputDirectory = OutputDirectory
+for Directory in FileDirectories:
+    FileOutputDirectory += Directory + "/"
+
+os.makedirs(OutputDirectory, exist_ok = True)
+os.makedirs(FileOutputDirectory, exist_ok = True)
