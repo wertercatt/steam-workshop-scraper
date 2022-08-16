@@ -4,15 +4,26 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+#Find Submission Function
+def UGCClassFinder(tag):
+    return tag.has_attr("data-publishedfileid")
+
+
 #URL Setup
 BaseURL = "https://steamcommunity.com/profiles/"
 SteamID64 = str(sys.argv[1])
 Endpoint = "/myworkshopfiles/?p="
-
-EndpointRaw = requests.get(url = BaseURL + SteamID64 + Endpoint + str(1))
-EndpointHTML = EndpointRaw.text
-
-HTMLParse = BeautifulSoup(EndpointHTML, 'html.parser')
-
-WorkshopSubmissions = HTMLParse.find("class", id="ugc")
-print(json.dumps(WorkshopSubmissions, sort_keys=True, indent=4))
+Page = 1
+#Get HTML
+while Page < 1668:
+    EndpointRaw = requests.get(url = BaseURL + SteamID64 + Endpoint + str(Page))
+    EndpointHTML = EndpointRaw.text
+    #Parse HTML
+    HTMLParse = BeautifulSoup(EndpointHTML, "html.parser")
+    #find Submissions
+    WorkshopSubmissions = HTMLParse.find_all(UGCClassFinder)
+    for Submission in WorkshopSubmissions:
+        print(Submission.get("data-publishedfileid"))
+    if len(WorkshopSubmissions) == 0:
+        break
+    Page += 1
