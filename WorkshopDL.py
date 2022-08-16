@@ -23,8 +23,6 @@ def download(WorkshopID):
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
-    print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
-
     #Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
         GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
@@ -82,11 +80,11 @@ def download(WorkshopID):
         PreviewOutputDirectory = OutputDirectory
         for PreviewDirectory in PreviewDirectories:
             PreviewOutputDirectory += PreviewDirectory + "/"
-    os.makedirs(OutputDirectory, exist_ok = True)
+    os.makedirs(sanitize_filepath(OutputDirectory), exist_ok = True)
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        os.makedirs(FileOutputDirectory, exist_ok = True)
+        os.makedirs(sanitize_filepath(FileOutputDirectory), exist_ok = True)
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        os.makedirs(PreviewOutputDirectory, exist_ok = True)
+        os.makedirs(sanitize_filepath(PreviewOutputDirectory), exist_ok = True)
 
     #Download UGC Files
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
@@ -103,6 +101,5 @@ def download(WorkshopID):
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         UGCFileDetailsOutputPreview = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.preview.json"), "w")
         json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
-
 if __name__ == '__main__':
     download(sys.argv[1])
