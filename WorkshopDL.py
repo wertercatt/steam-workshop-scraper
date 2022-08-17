@@ -7,10 +7,11 @@ from pathvalidate import sanitize_filepath
 import time
 
 
-def download(WorkshopID):
+def download(WorkshopID, IsCollection=False):
     """Downloads the given WorkshopID"""
     # SteamWebAPI endpoints
     GetPublishedFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+    GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
     GetUGCFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetUGCFileDetails/v1/"
 
     # Load SteamWebAPI Key
@@ -30,6 +31,18 @@ def download(WorkshopID):
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
+    #Load Collection Metadata
+    if IsCollection:
+        for _ in range(LoadAttempts):
+            try:
+                GetCollectionDetailsData = {"key": Key, "collectioncount": 1, "publishedfileids[0]": WorkshopID}
+                GetCollectionDetailsRaw = requests.post(url=GetCollectionDetails, data=GetCollectionDetailsData)
+                CollectionDetails = json.loads(GetCollectionDetailsRaw.text)["response"]["collectiondetails"][0]
+            except json.JSONDecodeError:
+                time.sleep(3600)
+                continue
+            break
+    
     # Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
         for _ in range(LoadAttempts):
@@ -137,6 +150,9 @@ def download(WorkshopID):
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         UGCFileDetailsOutputPreview = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.preview.json"), "w")
         json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
+    if IsCollection:
+        CollectionDetailsOutput = open(sanitize_filepath(OutputDirectory + "/CollectionDetails.json"), "w")
+        json.dump(CollectionDetails, CollectionDetailsOutput, sort_keys=True, indent=4)
 
 
 if __name__ == "__main__":
