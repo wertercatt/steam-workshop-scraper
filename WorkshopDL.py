@@ -117,9 +117,20 @@ def download(WorkshopID):
 
     #Download UGC Files
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        os.system("wget -O \"" + sanitize_filepath(FileOutputDirectory + FileName) + "\" " + UGCFileDetailsFile["url"])
+        LocalFileLocation = sanitize_filepath(FileOutputDirectory + FileName)
+        with requests.get(UGCFileDetailsFile["url"]) as RawFileContent:
+            with open(LocalFileLocation, "wb") as LocalFile:
+                LocalFile.write(RawFileContent.content)
+                with open(sanitize_filepath(LocalFileLocation + ".headers.json"), "w") as FileContentHeadersOutput:
+                    json.dump(dict(RawFileContent.headers), FileContentHeadersOutput, sort_keys=True, indent=4)
+
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        os.system("wget -O \"" + sanitize_filepath(PreviewOutputDirectory + PreviewName) + "\" " + UGCFileDetailsPreview["url"])
+        LocalPreviewLocation = sanitize_filepath(PreviewOutputDirectory + PreviewName)
+        with requests.get(UGCFileDetailsPreview["url"]) as RawPreviewContent:
+            with open(LocalPreviewLocation, "wb") as LocalPreview:
+                LocalPreview.write(RawPreviewContent.content)
+                with open(sanitize_filepath(LocalPreviewLocation + ".headers.json"), "w") as PreviewContentHeadersOutput:
+                    json.dump(dict(RawPreviewContent.headers), PreviewContentHeadersOutput, sort_keys=True, indent=4)
 
     #Save JSON Responses
     PublishedFileDetailsOutput = open(sanitize_filepath(OutputDirectory + "/PublishedFileDetails.json"), "w")
@@ -130,5 +141,5 @@ def download(WorkshopID):
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         UGCFileDetailsOutputPreview = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.preview.json"), "w")
         json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
-if __name__ == '__main__':
+if __name__ == "__main__":
     download(sys.argv[1])

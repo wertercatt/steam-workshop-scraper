@@ -29,5 +29,5 @@ def scrape(SteamID64):
     for SubmissionID in SubmissionIDs:
         WorkshopDL.download(SubmissionID)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     scrape(sys.argv[1])

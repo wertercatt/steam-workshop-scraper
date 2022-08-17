@@ -10,5 +10,5 @@ def download(CollectionID):
     print(CollectionID)
     print(GetCollectionDetails)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     download(sys.argv[1])
