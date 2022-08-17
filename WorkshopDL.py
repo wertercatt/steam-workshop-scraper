@@ -18,7 +18,7 @@ def download(WorkshopID):
     #Load Workshop Page Details
     for _ in range(LoadAttempts):
         try:
-            GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
+            GetPublishedFileDetailsData = {"key": Key, "itemcount": 1, "publishedfileids[0]": WorkshopID}
             GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
             PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
         except:
