@@ -7,6 +7,7 @@ from pathvalidate import sanitize_filepath
 import time
 
 def download(WorkshopID):
+    '''Downloads the given WorkshopID'''
     # SteamWebAPI endpoints
     GetPublishedFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
     GetUGCFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetUGCFileDetails/v1/"
