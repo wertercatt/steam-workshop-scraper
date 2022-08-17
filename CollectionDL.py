@@ -5,7 +5,7 @@ import sys
 import os
 
 def download(CollectionID):
-    #SteamWebAPI endpoint
+    # SteamWebAPI endpoint
     GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
     print(CollectionID)
     print(GetCollectionDetails)

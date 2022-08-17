@@ -8,18 +8,18 @@ def UGCClassFinder(tag):
     return tag.has_attr("data-publishedfileid")
 
 def scrape(SteamID64):
-    #URL Setup
+    # URL Setup
     BaseURL = "https://steamcommunity.com/profiles/"
     Endpoint = "/myworkshopfiles/?p="
     Page = 1
     SubmissionIDs = []
-    #Get HTML
+    # Get HTML
     while Page < 1668:
         EndpointRaw = requests.get(url=BaseURL + SteamID64 + Endpoint + str(Page))
         EndpointHTML = EndpointRaw.text
-        #Parse HTML
+        # Parse HTML
         HTMLParse = BeautifulSoup(EndpointHTML, "html.parser")
-        #find Submissions
+        # find Submissions
         WorkshopSubmissions = HTMLParse.find_all(UGCClassFinder)
         for Submission in WorkshopSubmissions:
             SubmissionIDs.append(Submission.get("data-publishedfileid"))
