@@ -5,7 +5,7 @@ import sys
 import os
 
 def download(CollectionID):
-    '''Downloads the metadata for a collection and then batch downloads the items in it (Not Implemented)'''
+    """Downloads the metadata for a collection and then batch downloads the items in it (Not Implemented)"""
     # SteamWebAPI endpoint
     GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
     print(CollectionID)

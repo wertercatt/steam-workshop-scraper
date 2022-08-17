@@ -4,7 +4,7 @@ import UserScrape
 import sys
 
 def scrape(GroupName):
-    '''Batch downloads the submissions of all users in a given Steam group'''
+    """Batch downloads the submissions of all users in a given Steam group"""
     BaseURL = "https://steamcommunity.com/groups/"
     Endpoint = "/memberslistxml/?xml=1"
     EndpointRaw = requests.get(url=BaseURL + GroupName + Endpoint)

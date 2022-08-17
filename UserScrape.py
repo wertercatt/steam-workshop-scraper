@@ -5,11 +5,11 @@ import WorkshopDL
 
 # Find Submission Function
 def UGCClassFinder(tag):
-    '''BeautifulSoup filter that finds HTML tags with a data-publishedfileid attribute'''
+    """BeautifulSoup filter that finds HTML tags with a data-publishedfileid attribute"""
     return tag.has_attr("data-publishedfileid")
 
 def scrape(SteamID64):
-    '''Batch download the Steam Workshop submissions of a user with the specific SteamID64'''
+    """Batch download the Steam Workshop submissions of a user with the specific SteamID64"""
     # URL Setup
     BaseURL = "https://steamcommunity.com/profiles/"
     Endpoint = "/myworkshopfiles/?p="
