@@ -60,23 +60,23 @@ def download(WorkshopID):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
                     GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                    if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
+                        UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
                 except:
                     time.sleep(3600)
                     continue
                 break
-        if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
-            UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
         else:
             for i in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                    if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
+                        UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
                 except:
                     time.sleep(3600)
                     continue
                 break
-            if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
-                UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
 
 
     #Get Variables for Output
