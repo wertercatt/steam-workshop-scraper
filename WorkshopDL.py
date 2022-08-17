@@ -13,9 +13,8 @@ def download(WorkshopID):
     GetUGCFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetUGCFileDetails/v1/"
 
     #Load SteamWebAPI Key
-    KeyFile = open("./SteamWebAPI.key", "r")
-    Key = KeyFile.read()
-    KeyFile.close()
+    with open("./SteamWebAPI.key", "r") as KeyFile:
+        Key = KeyFile.read()
     LoadAttempts = 1000
     #Load Workshop Page Details
     for i in range(LoadAttempts):
