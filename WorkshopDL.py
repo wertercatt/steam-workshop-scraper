@@ -9,7 +9,6 @@ import time
 def download(WorkshopID):
     #SteamWebAPI endpoints
     GetPublishedFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
-    GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
     GetUGCFileDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetUGCFileDetails/v1/"
 
     #Load SteamWebAPI Key
@@ -17,7 +16,7 @@ def download(WorkshopID):
         Key = KeyFile.read()
     LoadAttempts = 1000
     #Load Workshop Page Details
-    for i in range(LoadAttempts):
+    for _ in range(LoadAttempts):
         try:
             GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
             GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
@@ -31,7 +30,7 @@ def download(WorkshopID):
 
     #Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        for i in range(LoadAttempts):
+        for _ in range(LoadAttempts):
             try:
                 GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
                 GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
@@ -42,7 +41,7 @@ def download(WorkshopID):
         if "data" in json.loads(GetUGCFileDetailsRawFile.text):
             UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
         else:
-            for i in range(LoadAttempts):
+            for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersFile= "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
@@ -55,7 +54,7 @@ def download(WorkshopID):
 
     #Get additional UGC metadata for the preview
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        for i in range(LoadAttempts):
+        for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
                     GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
@@ -66,7 +65,7 @@ def download(WorkshopID):
                     continue
                 break
         else:
-            for i in range(LoadAttempts):
+            for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
