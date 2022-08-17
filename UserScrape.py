@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import WorkshopDL
 
-#Find Submission Function
+# Find Submission Function
 def UGCClassFinder(tag):
     return tag.has_attr("data-publishedfileid")
 
