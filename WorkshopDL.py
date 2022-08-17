@@ -118,19 +118,15 @@ def download(WorkshopID):
     #Download UGC Files
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
         LocalFileLocation = sanitize_filepath(FileOutputDirectory + FileName)
-        with requests.get(UGCFileDetailsFile["url"]) as RawFileContent:
-            with open(LocalFileLocation, "wb") as LocalFile:
-                LocalFile.write(RawFileContent.content)
-                with open(sanitize_filepath(LocalFileLocation + ".headers.json"), "w") as FileContentHeadersOutput:
-                    json.dump(dict(RawFileContent.headers), FileContentHeadersOutput, sort_keys=True, indent=4)
+        with requests.get(UGCFileDetailsFile["url"]) as RawFileContent, open(LocalFileLocation, "wb") as LocalFile, open(sanitize_filepath(LocalFileLocation + ".headers.json"), "w") as FileContentHeadersOutput:
+            LocalFile.write(RawFileContent.content)
+            json.dump(dict(RawFileContent.headers), FileContentHeadersOutput, sort_keys=True, indent=4)
 
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         LocalPreviewLocation = sanitize_filepath(PreviewOutputDirectory + PreviewName)
-        with requests.get(UGCFileDetailsPreview["url"]) as RawPreviewContent:
-            with open(LocalPreviewLocation, "wb") as LocalPreview:
-                LocalPreview.write(RawPreviewContent.content)
-                with open(sanitize_filepath(LocalPreviewLocation + ".headers.json"), "w") as PreviewContentHeadersOutput:
-                    json.dump(dict(RawPreviewContent.headers), PreviewContentHeadersOutput, sort_keys=True, indent=4)
+        with requests.get(UGCFileDetailsPreview["url"]) as RawPreviewContent, open(LocalPreviewLocation, "wb") as LocalPreview, open(sanitize_filepath(LocalPreviewLocation + ".headers.json"), "w") as PreviewContentHeadersOutput:
+            LocalPreview.write(RawPreviewContent.content)
+            json.dump(dict(RawPreviewContent.headers), PreviewContentHeadersOutput, sort_keys=True, indent=4)
 
     #Save JSON Responses
     PublishedFileDetailsOutput = open(sanitize_filepath(OutputDirectory + "/PublishedFileDetails.json"), "w")
