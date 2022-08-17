@@ -53,7 +53,6 @@ def download(WorkshopID):
                     continue
                 break
 
-
     # Get additional UGC metadata for the preview
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         for _ in range(LoadAttempts):
@@ -77,7 +76,6 @@ def download(WorkshopID):
                     time.sleep(3600)
                     continue
                 break
-
 
     # Get Variables for Output
     SteamID64 = PublishedFileDetails["creator"]
