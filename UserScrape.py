@@ -3,10 +3,11 @@ import requests
 from bs4 import BeautifulSoup
 import WorkshopDL
 
-# Find Submission Function
+
 def UGCClassFinder(tag):
     """BeautifulSoup filter that finds HTML tags with a data-publishedfileid attribute"""
     return tag.has_attr("data-publishedfileid")
+
 
 def scrape(SteamID64):
     """Batch download the Steam Workshop submissions of a user with the specific SteamID64"""
@@ -30,6 +31,7 @@ def scrape(SteamID64):
         Page += 1
     for SubmissionID in SubmissionIDs:
         WorkshopDL.download(SubmissionID)
+
 
 if __name__ == "__main__":
     scrape(sys.argv[1])

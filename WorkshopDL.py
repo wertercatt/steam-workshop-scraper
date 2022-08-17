@@ -6,6 +6,7 @@ import os
 from pathvalidate import sanitize_filepath
 import time
 
+
 def download(WorkshopID):
     """Downloads the given WorkshopID"""
     # SteamWebAPI endpoints
@@ -138,5 +139,7 @@ def download(WorkshopID):
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
         UGCFileDetailsOutputPreview = open(sanitize_filepath(OutputDirectory + "/UGCFileDetails.preview.json"), "w")
         json.dump(UGCFileDetailsPreview, UGCFileDetailsOutputPreview, sort_keys=True, indent=4)
+
+
 if __name__ == "__main__":
     download(sys.argv[1])
