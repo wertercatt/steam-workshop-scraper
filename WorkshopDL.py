@@ -28,6 +28,7 @@ def download(WorkshopID, IsCollection=False):
             time.sleep(3600)
             continue
         break
+    print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
