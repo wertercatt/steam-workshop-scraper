@@ -15,7 +15,7 @@ def scrape(SteamID64):
     SubmissionIDs = []
     #Get HTML
     while Page < 1668:
-        EndpointRaw = requests.get(url = BaseURL + SteamID64 + Endpoint + str(Page))
+        EndpointRaw = requests.get(url=BaseURL + SteamID64 + Endpoint + str(Page))
         EndpointHTML = EndpointRaw.text
         #Parse HTML
         HTMLParse = BeautifulSoup(EndpointHTML, "html.parser")

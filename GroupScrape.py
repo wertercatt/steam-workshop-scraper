@@ -6,7 +6,7 @@ import sys
 def scrape(GroupName):
     BaseURL = "https://steamcommunity.com/groups/"
     Endpoint = "/memberslistxml/?xml=1"
-    EndpointRaw = requests.get(url = BaseURL + GroupName + Endpoint)
+    EndpointRaw = requests.get(url=BaseURL + GroupName + Endpoint)
     EndpointXML = EndpointRaw.text
     XMLParse = BeautifulSoup(EndpointXML, "xml")
     SteamID64s = XMLParse.find_all("steamID64")

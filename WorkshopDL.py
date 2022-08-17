@@ -19,7 +19,7 @@ def download(WorkshopID):
     for _ in range(LoadAttempts):
         try:
             GetPublishedFileDetailsData = {"key": Key, "itemcount": 1, "publishedfileids[0]": WorkshopID}
-            GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
+            GetPublishedFileDetailsRaw = requests.post(url=GetPublishedFileDetails, data=GetPublishedFileDetailsData)
             PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
         except:
             time.sleep(3600)
@@ -33,7 +33,7 @@ def download(WorkshopID):
         for _ in range(LoadAttempts):
             try:
                 GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
-                GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+                GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
             except:
                 time.sleep(3600)
                 continue
@@ -44,7 +44,7 @@ def download(WorkshopID):
             for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
-                    GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+                    GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
                     UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
                 except:
                     time.sleep(3600)
@@ -57,7 +57,7 @@ def download(WorkshopID):
         for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
-                    GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                    GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                     if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                         UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
                 except:
@@ -68,7 +68,7 @@ def download(WorkshopID):
             for _ in range(LoadAttempts):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
-                    GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                    GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                     if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                         UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
                 except:
@@ -109,11 +109,11 @@ def download(WorkshopID):
         PreviewOutputDirectory = OutputDirectory
         for PreviewDirectory in PreviewDirectories:
             PreviewOutputDirectory += PreviewDirectory + "/"
-    os.makedirs(sanitize_filepath(OutputDirectory), exist_ok = True)
+    os.makedirs(sanitize_filepath(OutputDirectory), exist_ok=True)
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        os.makedirs(sanitize_filepath(FileOutputDirectory), exist_ok = True)
+        os.makedirs(sanitize_filepath(FileOutputDirectory), exist_ok=True)
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        os.makedirs(sanitize_filepath(PreviewOutputDirectory), exist_ok = True)
+        os.makedirs(sanitize_filepath(PreviewOutputDirectory), exist_ok=True)
 
     #Download UGC Files
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
