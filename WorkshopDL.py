@@ -43,7 +43,7 @@ def download(WorkshopID):
         else:
             for _ in range(LoadAttempts):
                 try:
-                    GetUGCFileDetailsParametersFile= "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
+                    GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
                     UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
                 except:
