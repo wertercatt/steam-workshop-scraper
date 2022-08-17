@@ -31,7 +31,7 @@ def download(WorkshopID, IsCollection=False):
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
-    #Load Collection Metadata
+    # Load Collection Metadata
     if IsCollection:
         for _ in range(LoadAttempts):
             try:
@@ -42,7 +42,7 @@ def download(WorkshopID, IsCollection=False):
                 time.sleep(3600)
                 continue
             break
-    
+
     # Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
         for _ in range(LoadAttempts):

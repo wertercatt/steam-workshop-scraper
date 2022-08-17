@@ -10,13 +10,13 @@ def download(CollectionID):
     # SteamWebAPI endpoint
     GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
 
-    #Timeout Variable
+    # Timeout Variable
     LoadAttempts = 1000
-    
+
     # Load SteamWebAPI Key
     with open("./SteamWebAPI.key", "r") as KeyFile:
         Key = KeyFile.read()
-    
+
     # Load Workshop Page Details
     for _ in range(LoadAttempts):
         try:
