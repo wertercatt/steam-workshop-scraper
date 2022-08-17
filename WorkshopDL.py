@@ -23,7 +23,7 @@ def download(WorkshopID):
             GetPublishedFileDetailsData = {"key": Key, "itemcount": 1, "publishedfileids[0]": WorkshopID}
             GetPublishedFileDetailsRaw = requests.post(url=GetPublishedFileDetails, data=GetPublishedFileDetailsData)
             PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
-        except:
+        except(json.JSONDecodeError):
             time.sleep(3600)
             continue
         break
@@ -36,7 +36,7 @@ def download(WorkshopID):
             try:
                 GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
                 GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
-            except:
+            except(json.JSONDecodeError):
                 time.sleep(3600)
                 continue
             break
@@ -48,7 +48,7 @@ def download(WorkshopID):
                     GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
                     UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
-                except:
+                except(json.JSONDecodeError):
                     time.sleep(3600)
                     continue
                 break
@@ -62,7 +62,7 @@ def download(WorkshopID):
                 GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                 if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                     UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
-            except:
+            except(json.JSONDecodeError):
                 time.sleep(3600)
                 continue
             break
@@ -73,7 +73,7 @@ def download(WorkshopID):
                     GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                     if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                         UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
-                except:
+                except(json.JSONDecodeError):
                     time.sleep(3600)
                     continue
                 break
