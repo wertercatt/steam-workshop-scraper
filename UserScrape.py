@@ -1,8 +1,6 @@
 import sys
-import os
 import requests
 from bs4 import BeautifulSoup
-import json
 import WorkshopDL
 
 #Find Submission Function

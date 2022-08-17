@@ -4,6 +4,7 @@ import datetime
 import requests
 import os
 from pathvalidate import sanitize_filepath
+import time
 
 def download(WorkshopID):
     #SteamWebAPI endpoints
@@ -15,35 +16,65 @@ def download(WorkshopID):
     KeyFile = open("./SteamWebAPI.key", "r")
     Key = KeyFile.read()
     KeyFile.close()
-
+    LoadAttempts = 1000
     #Load Workshop Page Details
-    GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
-    GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
-    PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
+    for i in range(LoadAttempts):
+        try:
+            GetPublishedFileDetailsData = {"key":Key,"itemcount":1,"publishedfileids[0]":WorkshopID}
+            GetPublishedFileDetailsRaw = requests.post(url = GetPublishedFileDetails, data = GetPublishedFileDetailsData)
+            PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
+        except:
+            time.sleep(3600)
+            continue
+        break
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
     #Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
-        GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+        for i in range(LoadAttempts):
+            try:
+                GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
+                GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+            except:
+                time.sleep(3600)
+                continue
+            break
         if "data" in json.loads(GetUGCFileDetailsRawFile.text):
             UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
         else:
-            GetUGCFileDetailsParametersFile= "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
-            GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
-            UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
+            for i in range(LoadAttempts):
+                try:
+                    GetUGCFileDetailsParametersFile= "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
+                    GetUGCFileDetailsRawFile = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersFile)
+                    UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
+                except:
+                    time.sleep(3600)
+                    continue
+                break
 
 
     #Get additional UGC metadata for the preview
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
-        GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+        for i in range(LoadAttempts):
+                try:
+                    GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
+                    GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                except:
+                    time.sleep(3600)
+                    continue
+                break
         if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
             UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
         else:
-            GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
-            GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+            for i in range(LoadAttempts):
+                try:
+                    GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
+                    GetUGCFileDetailsRawPreview = requests.get(url = GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
+                except:
+                    time.sleep(3600)
+                    continue
+                break
             if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                 UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
 
