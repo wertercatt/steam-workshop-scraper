@@ -6,7 +6,7 @@ from tqdm.auto import trange
 import WorkshopDL
 
 
-def search(QueryType,ConsumerAppID,RequiredFlags,RequiredTags=""):
+def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
     """Searches the Steam Workshop"""
     # SteamWebAPI endpoint
     QueryFiles = "https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/"
@@ -20,7 +20,28 @@ def search(QueryType,ConsumerAppID,RequiredFlags,RequiredTags=""):
     QueryResults = []
     FullResults = {}
     FileTypeCount = 20
-    FileTypes = ["k_PFI_MatchingFileType_Items", "k_PFI_MatchingFileType_Collections", "k_PFI_MatchingFileType_Art", "k_PFI_MatchingFileType_Videos", "k_PFI_MatchingFileType_Screenshots", "k_PFI_MatchingFileType_CollectionEligible", "k_PFI_MatchingFileType_Games", "k_PFI_MatchingFileType_Software", "k_PFI_MatchingFileType_Concepts", "k_PFI_MatchingFileType_GreenlightItems", "k_PFI_MatchingFileType_AllGuides", "k_PFI_MatchingFileType_WebGuides", "k_PFI_MatchingFileType_IntegratedGuides", "k_PFI_MatchingFileType_UsableInGame", "k_PFI_MatchingFileType_Merch", "k_PFI_MatchingFileType_ControllerBindings", "k_PFI_MatchingFileType_SteamworksAccessInvites", "k_PFI_MatchingFileType_Items_Mtx", "k_PFI_MatchingFileType_Items_ReadyToUse", "k_PFI_MatchingFileType_WorkshopShowcase", "k_PFI_MatchingFileType_GameManagedItems"]
+    FileTypes = [
+        "k_PFI_MatchingFileType_Items",
+        "k_PFI_MatchingFileType_Collections",
+        "k_PFI_MatchingFileType_Art",
+        "k_PFI_MatchingFileType_Videos",
+        "k_PFI_MatchingFileType_Screenshots",
+        "k_PFI_MatchingFileType_CollectionEligible",
+        "k_PFI_MatchingFileType_Games",
+        "k_PFI_MatchingFileType_Software",
+        "k_PFI_MatchingFileType_Concepts",
+        "k_PFI_MatchingFileType_GreenlightItems",
+        "k_PFI_MatchingFileType_AllGuides",
+        "k_PFI_MatchingFileType_WebGuides",
+        "k_PFI_MatchingFileType_IntegratedGuides",
+        "k_PFI_MatchingFileType_UsableInGame",
+        "k_PFI_MatchingFileType_Merch",
+        "k_PFI_MatchingFileType_ControllerBindings",
+        "k_PFI_MatchingFileType_SteamworksAccessInvites",
+        "k_PFI_MatchingFileType_Items_Mtx",
+        "k_PFI_MatchingFileType_Items_ReadyToUse",
+        "k_PFI_MatchingFileType_WorkshopShowcase",
+        "k_PFI_MatchingFileType_GameManagedItems"]
     # Load Workshop Page Details
     for FileType in trange(FileTypeCount, desc="Checking All FileTypes"):
         for _ in trange(LoadAttempts, desc="Loading First Result"):
@@ -52,7 +73,7 @@ def search(QueryType,ConsumerAppID,RequiredFlags,RequiredTags=""):
             WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
         QueryResults.append(QueryResult)
         Cursor = QueryResult["next_cursor"]
-        TotalItems = QueryResult["total"]
+        TotalItems = QueryResult["total"] - 1
         for Item in trange(TotalItems, desc="Loading All " + FileTypes[FileType] + " Results"):
             for _ in trange(LoadAttempts, desc="Loading Result #" + str(Item)):
                 try:
@@ -93,4 +114,4 @@ def search(QueryType,ConsumerAppID,RequiredFlags,RequiredTags=""):
 
 
 if __name__ == "__main__":
-    search(1, 213630, "")
+    search(1, 660, "")

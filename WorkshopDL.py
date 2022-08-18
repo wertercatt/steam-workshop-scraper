@@ -8,7 +8,6 @@ import time
 from tqdm.auto import trange
 
 
-
 def download(WorkshopID, IsCollection=False):
     """Downloads the given WorkshopID"""
     # SteamWebAPI endpoints
