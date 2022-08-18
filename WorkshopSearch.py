@@ -4,6 +4,7 @@ import urllib.parse
 import time
 from tqdm.auto import trange
 import WorkshopDL
+import CollectionDL
 
 
 def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
@@ -70,7 +71,10 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
                 continue
             break
         if "publishedfiledetails" in QueryResult:
-            WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
+            if FileType == 1:
+                CollectionDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"], ConsumerAppID)
+            if FileType != 1:
+                WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
         QueryResults.append(QueryResult)
         Cursor = QueryResult["next_cursor"]
         TotalItems = QueryResult["total"] - 1
@@ -105,7 +109,10 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
             if "publishedfiledetails" not in QueryResult:
                 break
             Cursor = urllib.parse.quote(QueryResult["next_cursor"])
-            WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
+            if FileType == 1:
+                CollectionDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"], ConsumerAppID)
+            if FileType != 1:
+                WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
             QueryResults.append(QueryResult)
         FullResults[FileTypes[FileType]] = QueryResults
         QueryResults = []
@@ -114,4 +121,4 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
 
 
 if __name__ == "__main__":
-    search(1, 660, "")
+    search(1, 841, "")

@@ -29,7 +29,7 @@ def download(WorkshopID, IsCollection=False):
             time.sleep(30)
             continue
         break
-    if "result" in PublishedFileDetails:
+    if PublishedFileDetails["result"] != 1:
         return
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])

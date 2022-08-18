@@ -3,9 +3,10 @@ import requests
 import WorkshopDL
 import sys
 import time
+import os
 
 
-def download(CollectionID):
+def download(CollectionID, AppID=-1):
     """Downloads the metadata for a collection and then batch downloads the items in it"""
     # SteamWebAPI endpoint
     GetCollectionDetails = "https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/"
@@ -28,6 +29,10 @@ def download(CollectionID):
             continue
         break
     WorkshopDL.download(CollectionID, True)
+    if AppID != -1:
+        os.makedirs("./" + str(AppID) + "/CollectionDetails/", exist_ok=True)
+        with open("./" + str(AppID) + "/CollectionDetails/" + str(CollectionID) + ".json", "w") as OutputFile:
+            json.dump(CollectionDetails, OutputFile, sort_keys=True, indent=4)
     for Entry in CollectionDetails["children"]:
         WorkshopDL.download(Entry["publishedfileid"])
 
