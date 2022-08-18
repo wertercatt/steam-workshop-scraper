@@ -5,6 +5,8 @@ import requests
 import os
 from pathvalidate import sanitize_filepath
 import time
+from tqdm.auto import trange
+
 
 
 def download(WorkshopID, IsCollection=False):
@@ -19,75 +21,76 @@ def download(WorkshopID, IsCollection=False):
         Key = KeyFile.read()
     LoadAttempts = 1000
     # Load Workshop Page Details
-    for _ in range(LoadAttempts):
+    for _ in trange(LoadAttempts, desc="Loading PublishedFileDetails"):
         try:
             GetPublishedFileDetailsData = {"key": Key, "itemcount": 1, "publishedfileids[0]": WorkshopID}
             GetPublishedFileDetailsRaw = requests.post(url=GetPublishedFileDetails, data=GetPublishedFileDetailsData)
             PublishedFileDetails = json.loads(GetPublishedFileDetailsRaw.text)["response"]["publishedfiledetails"][0]
         except json.JSONDecodeError:
-            time.sleep(3600)
+            time.sleep(30)
             continue
         break
-    print(json.dumps(PublishedFileDetails, sort_keys=True, indent=4))
+    if "result" in PublishedFileDetails:
+        return
     CreatorAppID = str(PublishedFileDetails["creator_app_id"])
     ConsumerAppID = str(PublishedFileDetails["consumer_app_id"])
 
     # Load Collection Metadata
     if IsCollection:
-        for _ in range(LoadAttempts):
+        for _ in trange(LoadAttempts, desc="Loading CollectionDetails"):
             try:
                 GetCollectionDetailsData = {"key": Key, "collectioncount": 1, "publishedfileids[0]": WorkshopID}
                 GetCollectionDetailsRaw = requests.post(url=GetCollectionDetails, data=GetCollectionDetailsData)
                 CollectionDetails = json.loads(GetCollectionDetailsRaw.text)["response"]["collectiondetails"][0]
             except json.JSONDecodeError:
-                time.sleep(3600)
+                time.sleep(30)
                 continue
             break
 
     # Get additional UGC metadata for the file
     if "file_url" in PublishedFileDetails and PublishedFileDetails["file_url"] != "":
-        for _ in range(LoadAttempts):
+        for _ in trange(LoadAttempts, desc="Loading PublishedFileDetailsFile"):
             try:
                 GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + CreatorAppID
                 GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
             except json.JSONDecodeError:
-                time.sleep(3600)
+                time.sleep(30)
                 continue
             break
         if "data" in json.loads(GetUGCFileDetailsRawFile.text):
             UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
         else:
-            for _ in range(LoadAttempts):
+            for _ in trange(LoadAttempts, desc="Loading PublishedFileDetailsFile from Fallback ID"):
                 try:
                     GetUGCFileDetailsParametersFile = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_file"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawFile = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersFile)
                     UGCFileDetailsFile = (json.loads(GetUGCFileDetailsRawFile.text))["data"]
                 except json.JSONDecodeError:
-                    time.sleep(3600)
+                    time.sleep(30)
                     continue
                 break
 
     # Get additional UGC metadata for the preview
     if "preview_url" in PublishedFileDetails and PublishedFileDetails["preview_url"] != "":
-        for _ in range(LoadAttempts):
+        for _ in trange(LoadAttempts, desc="Loading PublishedFileDetailsPreview"):
             try:
                 GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + CreatorAppID
                 GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                 if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                     UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
             except json.JSONDecodeError:
-                time.sleep(3600)
+                time.sleep(30)
                 continue
             break
         else:
-            for _ in range(LoadAttempts):
+            for _ in trange(LoadAttempts, desc="Loading PublishedFileDetailsPreview from Fallback ID"):
                 try:
                     GetUGCFileDetailsParametersPreview = "?key=" + Key + "&ugcid=" + PublishedFileDetails["hcontent_preview"] + "&appid=" + ConsumerAppID
                     GetUGCFileDetailsRawPreview = requests.get(url=GetUGCFileDetails + GetUGCFileDetailsParametersPreview)
                     if "data" in json.loads(GetUGCFileDetailsRawPreview.text):
                         UGCFileDetailsPreview = (json.loads(GetUGCFileDetailsRawPreview.text))["data"]
                 except json.JSONDecodeError:
-                    time.sleep(3600)
+                    time.sleep(30)
                     continue
                 break
 

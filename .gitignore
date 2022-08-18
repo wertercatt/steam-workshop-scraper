@@ -1,3 +1,4 @@
 *.key
 Workshop-Downloads*/
 __pycache__/
+*.json
