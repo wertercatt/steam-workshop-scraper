@@ -1,0 +1,4 @@
+beautifulsoup4==4.11.1
+pathvalidate==2.5.1
+requests==2.27.1
+tqdm==4.62.3
