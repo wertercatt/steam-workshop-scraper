@@ -1,10 +1,11 @@
 import sys
+
 import requests
 from bs4 import BeautifulSoup
-import WorkshopDL
-import CollectionDL
 from tqdm.auto import trange
 
+import CollectionDL
+import WorkshopDL
 
 
 def UGCClassFinder(tag):
@@ -36,7 +37,9 @@ def scrape(SteamID64):
         WorkshopDL.download(SubmissionID)
 
     for Page2 in trange(1668, desc="Retrieving Collection Pages"):
-        EndpointCollectionsRaw = requests.get(url=BaseURL + SteamID64 + EndpointCollections + str(Page2 + 1))
+        EndpointCollectionsRaw = requests.get(
+            url=BaseURL + SteamID64 + EndpointCollections + str(Page2 + 1)
+        )
         EndpointCollectionsHTML = EndpointCollectionsRaw.text
         # Parse HTML
         HTMLParse = BeautifulSoup(EndpointCollectionsHTML, "html.parser")
@@ -48,6 +51,7 @@ def scrape(SteamID64):
             break
     for CollectionID in CollectionIDs:
         CollectionDL.download(CollectionID)
+
 
 if __name__ == "__main__":
     scrape(sys.argv[1])

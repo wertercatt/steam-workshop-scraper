@@ -1,10 +1,12 @@
 import json
-import requests
-import urllib.parse
 import time
+import urllib.parse
+
+import requests
 from tqdm.auto import trange
-import WorkshopDL
+
 import CollectionDL
+import WorkshopDL
 
 
 def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
@@ -16,7 +18,7 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
     LoadAttempts = 1000
 
     # Load SteamWebAPI Key
-    with open("./SteamWebAPI.key", "r") as KeyFile:
+    with open("./SteamWebAPI.key") as KeyFile:
         Key = KeyFile.read()
     QueryResults = []
     FullResults = {}
@@ -42,7 +44,8 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
         "k_PFI_MatchingFileType_Items_Mtx",
         "k_PFI_MatchingFileType_Items_ReadyToUse",
         "k_PFI_MatchingFileType_WorkshopShowcase",
-        "k_PFI_MatchingFileType_GameManagedItems"]
+        "k_PFI_MatchingFileType_GameManagedItems",
+    ]
     # Load Workshop Page Details
     for FileType in trange(FileTypeCount, desc="Checking All FileTypes"):
         for _ in trange(LoadAttempts, desc="Loading First Result"):
@@ -61,9 +64,11 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
                     "return_children": True,
                     "return_short_description": True,
                     "return_for_sale_data": True,
-                    "return_metadata": True
+                    "return_metadata": True,
                 }
-                QueryFilesParameters = "?key=" + Key + "&input_json=" + json.dumps(QueryFilesDict)
+                QueryFilesParameters = (
+                    "?key=" + Key + "&input_json=" + json.dumps(QueryFilesDict)
+                )
                 QueryFilesRaw = requests.get(url=QueryFiles + QueryFilesParameters)
                 QueryResult = json.loads(QueryFilesRaw.text)["response"]
             except json.JSONDecodeError:
@@ -72,13 +77,20 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
             break
         if "publishedfiledetails" in QueryResult:
             if FileType == 1:
-                CollectionDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"], ConsumerAppID)
+                CollectionDL.download(
+                    QueryResult["publishedfiledetails"][0]["publishedfileid"],
+                    ConsumerAppID,
+                )
             if FileType != 1:
-                WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
+                WorkshopDL.download(
+                    QueryResult["publishedfiledetails"][0]["publishedfileid"]
+                )
         QueryResults.append(QueryResult)
         Cursor = QueryResult["next_cursor"]
         TotalItems = QueryResult["total"] - 1
-        for Item in trange(TotalItems, desc="Loading All " + FileTypes[FileType] + " Results"):
+        for Item in trange(
+            TotalItems, desc="Loading All " + FileTypes[FileType] + " Results"
+        ):
             for _ in trange(LoadAttempts, desc="Loading Result #" + str(Item)):
                 try:
                     QueryFilesDict = {
@@ -95,9 +107,11 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
                         "return_children": True,
                         "return_short_description": True,
                         "return_for_sale_data": True,
-                        "return_metadata": True
+                        "return_metadata": True,
                     }
-                    QueryFilesParameters = "?key=" + Key + "&input_json=" + json.dumps(QueryFilesDict)
+                    QueryFilesParameters = (
+                        "?key=" + Key + "&input_json=" + json.dumps(QueryFilesDict)
+                    )
                     QueryFilesRaw = requests.get(url=QueryFiles + QueryFilesParameters)
                     QueryResult = json.loads(QueryFilesRaw.text)["response"]
                 except json.JSONDecodeError:
@@ -110,9 +124,14 @@ def search(QueryType, ConsumerAppID, RequiredFlags, RequiredTags=""):
                 break
             Cursor = urllib.parse.quote(QueryResult["next_cursor"])
             if FileType == 1:
-                CollectionDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"], ConsumerAppID)
+                CollectionDL.download(
+                    QueryResult["publishedfiledetails"][0]["publishedfileid"],
+                    ConsumerAppID,
+                )
             if FileType != 1:
-                WorkshopDL.download(QueryResult["publishedfiledetails"][0]["publishedfileid"])
+                WorkshopDL.download(
+                    QueryResult["publishedfiledetails"][0]["publishedfileid"]
+                )
             QueryResults.append(QueryResult)
         FullResults[FileTypes[FileType]] = QueryResults
         QueryResults = []
